@@ -1,29 +1,31 @@
 const _ = require('./underbar');
 
 const first = function(str, n) {
-  // Your code goes here
+  charResult = _.first(str.split(''), n);
+  return charResult.length === 1 ? charResult : charResult.join('');
 };
 
 const last = function(str, n) {
-  // Your code goes here
+  charResult = _.last(str.split(''), n);
+  return charResult.length === 1 ? charResult : charResult.join('');
 };
 
 const removeChar = function(str, target) {
   // hint: use _.reject
-  // Your code goes here
+  return _.reject(str.split(''), a => a === target).join('');
 };
 
 const hasChar = function(str, target) {
   // hint: use _.some
-  // Your code goes here
+  return _.some(str.split(''), a => a === target);
 };
 
 const isOnlyDigits = function(str) {
-  // Your code goes here
+  return _.every(str.split(''), a => !isNaN(a));
 };
 
 const filterToOnlyDigits = function(str) {
-  // Your code goes here
+  return _.filter(str.split(''), a => !isNaN(parseFloat(a))).join('');
 };
 
 const truncateString = function(val, maxLength) {
@@ -33,15 +35,23 @@ const truncateString = function(val, maxLength) {
 
 const truncateLongItems = function(obj, maxLength) {
   // hint: use truncateString above
-  // Your code goes here
+  return _.map(obj, (item) => truncateString(item, maxLength));
 };
 
 const countChars = function(str) {
-  // Your code goes here
+  let charCount = {};
+  _.each(str.split(''), (char) => {
+    if (char in charCount) {
+      charCount[char]++;
+    } else{
+      charCount[char] = 1;
+    }
+  });
+  return charCount;
 };
 
 const dedup = function(str) {
-  // Your code goes here
+  return _.uniq(str.split('')).join('');
 };
 
 module.exports = {

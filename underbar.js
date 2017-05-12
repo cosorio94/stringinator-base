@@ -65,13 +65,13 @@ const pluck = function(obj, key) {
 // (accumulator, value, index|key, collection).
 const reduce = function(obj, callback=identity, initialValue) {
   let accumulator = initialValue;
-  let isInitialized = !accumulator === undefined;
+  let isNotInitialized = (accumulator === undefined);
   each(obj, (value, index, obj) => {
-    if (!isInitialized) {
+    if (isNotInitialized) {
       accumulator = value;
-      isInitialized = !isInitialized;
+      isNotInitialized = false;
     } else{
-      callback(accumulator, value, index, obj);
+      accumulator = callback(accumulator, value, index, obj);
     }
   });
   return accumulator;
@@ -79,37 +79,53 @@ const reduce = function(obj, callback=identity, initialValue) {
 
 // Return true if the object contains the target.
 const contains = function(obj, target) {
-  each(obj, (currentValue) => {
-    if (currentValue === target) {
-      return true;
-    }
-  });
-  return false;
+  return reduce(obj, (wasFound, currentValue) => {
+    return wasFound || currentValue === target;
+  }, false);
 };
 
 // Return true if all the elements / object values are accepted by the callback.
 const every = function(obj, callback=identity) {
-  // Your code goes here
+  return reduce(obj, (everyCount, currentValue, currentIndex, obj) => {
+    return everyCount && !!callback(currentValue, currentIndex, obj);
+  }, true);
 };
 
 // Return true if even 1 element / object value is accepted by the callback.
 const some = function(obj, callback=identity) {
-  // Your code goes here
+  return reduce(obj, (somePassed, currentValue, currentIndex, obj) => {
+    return somePassed || !!callback(currentValue, currentIndex, obj);
+  }, false);
 };
 
 // Return an array with all elements / object values that are accepted by the callback.
 const filter = function(obj, callback=identity) {
-  // Your code goes here
+  let result = [];
+  each(obj, (currentValue, currentIndex, obj) => {
+    if (callback(currentValue, currentIndex, obj)) {
+      result.push(currentValue);
+    }
+  });
+  return result;
 };
 
 // Return object without the elements / object valuesthat were rejected by the callback.
 const reject = function(arr, callback=identity) {
-  // Your code goes here
+  let result = [];
+  each(arr, (currentValue, currentIndex, arr) => {
+    if (!callback(currentValue, currentIndex, arr)) {
+      result.push(currentValue);
+    }
+  });
+  return result;
 };
 
 // De-duplicates (de-dups) the elements / object values.
 const uniq = function(obj) {
-  // Your code goes here
+  let found = {};
+  return filter(obj, (item, currentKey, obj) => {
+    return !(item in found) && (found[item] = true);
+  });
 };
 
 
